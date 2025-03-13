@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>CFBundleDevelopmentRegion</key>
+		<string>en</string>
+		<!-- Facebook and Google URL Schemes (合併 CFBundleURLTypes) -->
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>fbAPPID</string>
+					<string>GOOGLE-URLSchemes</string>
+				</array>
+			</dict>
+		</array>
+		<!-- Facebook SDK 設定 -->
+		<key>FacebookAppID</key>
+		<string>APPID</string>
+		<key>FacebookClientToken</key>
+		<string>FBToken</string>
+		<key>FacebookDisplayName</key>
+		<string>AppName</string>
+		<!-- Facebook 允許的 URL Schemes -->
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>fbapi</string>
+			<string>fb-messenger-share-api</string>
+			<string>fbauth2</string>
+			<string>fbshareextension</string>
+		</array>
+		<!-- Google Sign-In 設定 -->
+		<key>GIDClientID</key>
+		<string>GIDClientID</string>
+		<key>GIDRedirectURI</key>
+		<string> GIDRedirectURI</string>
+		<!-- 其他應用基本配置 -->
+		<key>CFBundleDisplayName</key>
+		<string>UrbanRenewal</string>
+		<key>CFBundleExecutable</key>
+		<string>$(EXECUTABLE_NAME)</string>
+		<key>CFBundleIdentifier</key>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+		<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+		<key>CFBundleName</key>
+		<string>$(PRODUCT_NAME)</string>
+		<key>CFBundlePackageType</key>
+		<string>APPL</string>
+		<key>CFBundleShortVersionString</key>
+		<string>$(MARKETING_VERSION)</string>
+		<key>CFBundleSignature</key>
+		<string>????</string>
+		<key>CFBundleVersion</key>
+		<string>$(CURRENT_PROJECT_VERSION)</string>
+		<key>LSRequiresIPhoneOS</key>
+		<true />
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
+			<key>NSAllowsArbitraryLoads</key>
+			<false />
+			<key>NSAllowsLocalNetworking</key>
+			<true />
+		</dict>
+		<!-- 定位權限 (需要填寫內容) -->
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>需要存取您的位置以提供更好的服務</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>需要存取您的位置以提供更好的服務</string>
+		<key>UILaunchStoryboardName</key>
+		<string>LaunchScreen</string>
+		<key>UIRequiredDeviceCapabilities</key>
+		<array>
+			<string>arm64</string>
+		</array>
+		<key>UISupportedInterfaceOrientations</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+			<string>UIInterfaceOrientationLandscapeLeft</string>
+			<string>UIInterfaceOrientationLandscapeRight</string>
+		</array>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<false />
+	</dict>
+</plist>
