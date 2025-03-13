@@ -1,11 +1,8 @@
-import {View, Text, SafeAreaView, TouchableOpacity, Image} from 'react-native';
+import {View, Text, SafeAreaView, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import env from '../env';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useReactiveVar} from '@apollo/client';
-import {__idToken__, __userInfo__} from '../graphql/policies';
-import axios from 'axios';
+import {__userInfo__} from '../graphql/policies';
 
 GoogleSignin.configure({
   iosClientId: env.IOS_CLIENT_ID,
