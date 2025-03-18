@@ -1,4 +1,5 @@
 import {
+  FlatList,
   Keyboard,
   PermissionsAndroid,
   Platform,
@@ -19,11 +20,18 @@ import MapView, {
 import CustomMaker from '../components/CustomMaker';
 import Geolocation from '@react-native-community/geolocation';
 import {calcDistancePostApi, getAddressApi, getGeolocationApi} from '../api';
-import {LATLNG, CALC_DISTANCE_RESPONSE, GEOLOCATION_RESPONSE} from '../types';
+import {
+  LATLNG,
+  CALC_DISTANCE_RESPONSE,
+  GEOLOCATION_RESPONSE,
+  CALC_DISTANCE_RESULT_DATA,
+  GEOLOCATION_PROPRETIES_TYPE,
+} from '../types';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import InfoCard from '../components/InfoCard';
 
 const Map = () => {
-  const [isShowTip, setIsShowTip] = useState(false);
+  const [showTipIndex, setShowTipIndex] = useState(-1);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [position, setPosition] = useState({lat: 121.504603, lng: 24.993955});
   const [inputValue, setInputValue] = useState('');
@@ -35,6 +43,10 @@ const Map = () => {
   const [polygons, setPolygons] = useState<Array<{cordinates: Array<LatLng>}>>(
     [],
   );
+  const [data, setData] = useState<
+    | Array<CALC_DISTANCE_RESULT_DATA>
+    | Array<{cordinates: Array<LatLng & GEOLOCATION_PROPRETIES_TYPE>}>
+  >([]);
 
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
@@ -51,15 +63,16 @@ const Map = () => {
 
   const handleCalcDistance = useCallback(async () => {
     const response = await getAddressApi(inputValue.trim());
-    const data: LATLNG = response?.results[0]?.geometry?.location;
+    const input: LATLNG = response?.results[0]?.geometry?.location;
 
-    const result = await calcDistancePostApi(data);
+    const result = await calcDistancePostApi(input);
     if (result) {
       setPosition({
         lat: result?.result?.[0]?.latitude || 0,
         lng: result?.result?.[0]?.longitude || 0,
       });
       setCalcDistance(result);
+      setData(result.result);
     }
   }, [inputValue]);
 
@@ -86,6 +99,23 @@ const Map = () => {
       longitude: totalLng / numPoints,
     };
   };
+
+  const handleMarker = useCallback(
+    (index: number) => {
+      if (index === showTipIndex) {
+        setShowTipIndex(-1);
+      } else {
+        setShowTipIndex(index);
+      }
+    },
+    [showTipIndex],
+  );
+
+  const renrenderItem = ({
+    item,
+  }: {
+    item: CALC_DISTANCE_RESULT_DATA | (LatLng & GEOLOCATION_PROPRETIES_TYPE);
+  }) => <InfoCard item={item} setPosition={setPosition} />;
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -117,6 +147,7 @@ const Map = () => {
 
       return {
         cordinates,
+        ...feature.properties,
       };
     });
 
@@ -126,6 +157,7 @@ const Map = () => {
         lat: formattedPolygons?.[0]?.cordinates?.[0]?.latitude,
         lng: formattedPolygons?.[0]?.cordinates?.[0]?.longitude,
       });
+      setData(formattedPolygons);
     }
   }, [geolocation]);
 
@@ -183,20 +215,20 @@ const Map = () => {
         }
         showsUserLocation={true}
         region={{
-          latitude: position.lat,
-          longitude: position.lng,
+          longitude: 121.65072,
+          latitude: 25.063534,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-        {calcDistance?.result?.map(item => (
+        {calcDistance?.result?.map((item, index) => (
           <Marker
-            key={item.id}
-            onPress={() => setIsShowTip(!isShowTip)}
+            key={index}
+            onPress={() => handleMarker(index)}
             coordinate={{
               latitude: item.latitude,
               longitude: item.longitude,
             }}>
-            <CustomMaker isShowTip={isShowTip} />
+            <CustomMaker isShowTip={index === showTipIndex} />
           </Marker>
         ))}
 
@@ -204,10 +236,8 @@ const Map = () => {
           const centroid = calculateCentroid(polygon.cordinates);
           return (
             <View key={index}>
-              <Marker
-                onPress={() => setIsShowTip(!isShowTip)}
-                coordinate={centroid}>
-                <CustomMaker isShowTip={isShowTip} />
+              <Marker onPress={() => handleMarker(index)} coordinate={centroid}>
+                <CustomMaker isShowTip={index === showTipIndex} />
               </Marker>
               <Polygon
                 coordinates={polygon.cordinates}
@@ -219,6 +249,18 @@ const Map = () => {
           );
         })}
       </MapView>
+
+      {data && (
+        <FlatList
+          data={data || []}
+          key={'info_card'}
+          keyExtractor={item => (item?.id || item?.SHAPE_Area) + ''}
+          horizontal
+          renderItem={renrenderItem}
+          style={styles.listViwe}
+          showsHorizontalScrollIndicator={false}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -268,5 +310,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 10,
     bottom: 0,
+  },
+  listViwe: {
+    minHeight: 100,
+    maxHeight: 200,
+    padding: 12,
+    backgroundColor: 'white',
   },
 });

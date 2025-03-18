@@ -15,24 +15,24 @@ const CustomMaker = ({isShowTip}: Props) => {
     <View style={styles.container}>
       {isShowTip && (
         <View style={styles.thumbnailsContainer}>
-          <View style={styles.thumbnails}>
-            {userInfo?.data?.user?.photo && (
+          {userInfo?.data?.user?.photo && (
+            <View style={styles.thumbnails}>
               <Image
                 source={{uri: userInfo?.data?.user?.photo}}
                 style={styles.image}
                 resizeMode="contain"
               />
-            )}
-          </View>
-          <View style={styles.thumbnails}>
-            {userFBInfo?.imageURL && (
+            </View>
+          )}
+          {userFBInfo?.imageURL && (
+            <View style={styles.thumbnails}>
               <Image
                 source={{uri: userFBInfo?.imageURL}}
                 style={styles.image}
                 resizeMode="contain"
               />
-            )}
-          </View>
+            </View>
+          )}
         </View>
       )}
       <Svgs.Pin height={48} width={48} />
